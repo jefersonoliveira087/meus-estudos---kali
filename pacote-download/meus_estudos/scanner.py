@@ -1,0 +1,33 @@
+import socket
+import sys
+
+# Define o alvo (vamos testar no próprio computador local para aprender)
+alvo = input('Digite o IP do alvo que deseja varrer: ')
+
+print("-" * 50)
+print(f"Varrendo o alvo: {alvo}")
+print("-" * 50)
+
+# Portas mais comuns que queremos testar (HTTP, SSH, FTP, etc.)
+portas = [21, 22, 80, 443, 3389]
+
+try:
+    for porta in portas:
+        # Cria um socket TCP (AF_INET = IPv4, SOCK_STREAM = TCP)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Define um tempo limite de 1 segundo para não travar esperando a resposta
+        s.settimeout(1.0)
+        
+        # Tenta conectar na porta do alvo
+        resultado = s.connect_ex((alvo, porta))
+        
+        if resultado == 0:
+            print(f"Porta {porta}: ABERTA [vulnerável ou ativa]")
+        else:
+            print(f"Porta {porta}: Fechada")
+            
+        s.close()
+
+except KeyboardInterrupt:
+    print("\nSaindo do programa.")
+    sys.exit()
